@@ -1,0 +1,45 @@
+{
+  "version": 2,
+  "skills": {
+    "api-contract-testing": {
+      "source": "secondsky/claude-skills",
+      "commit": "14966c3024f48eea0386eb970b230ea0f4bebd33",
+      "sourceType": "github",
+      "skillPath": "plugins/api-contract-testing/skills/api-contract-testing/SKILL.md",
+      "computedHash": "fb7820d2d206c0185bf31e5c1b4767d00ff2c88ec6260c8cf9083f3a6c321cc0",
+      "installMode": "copy"
+    },
+    "documentation": {
+      "source": "anthropics/knowledge-work-plugins",
+      "commit": "5e504ae11498f2b8daa30d86b7dab97b2ecd8092",
+      "sourceType": "github",
+      "skillPath": "engineering/skills/documentation/SKILL.md",
+      "computedHash": "d401429502dcfb37aadfbeddcc3577a9618c393555d305c56821800570dcd1ed",
+      "installMode": "copy"
+    },
+    "security-threat-model": {
+      "source": "openai/skills",
+      "commit": "49f948faa9258a0c61caceaf225e179651397431",
+      "sourceType": "github",
+      "skillPath": "skills/.curated/security-threat-model/SKILL.md",
+      "computedHash": "6d66f27a8e4353f49264547acf4e541efd835f2e3a2d91f5a43e2104be5bd65e",
+      "installMode": "copy"
+    },
+    "system-design": {
+      "source": "anthropics/knowledge-work-plugins",
+      "commit": "5e504ae11498f2b8daa30d86b7dab97b2ecd8092",
+      "sourceType": "github",
+      "skillPath": "engineering/skills/system-design/SKILL.md",
+      "computedHash": "af8f7a393dea88bf9f4a4bc2c799ece207f6988436a7eab1f805e5384948b3fd",
+      "installMode": "copy"
+    },
+    "write-spec": {
+      "source": "anthropics/knowledge-work-plugins",
+      "commit": "5e504ae11498f2b8daa30d86b7dab97b2ecd8092",
+      "sourceType": "github",
+      "skillPath": "product-management/skills/write-spec/SKILL.md",
+      "computedHash": "0707e60bcc945c0ce1fd843161065a7bcd906552fb26183b1554b0eef3d1d739",
+      "installMode": "copy"
+    }
+  }
+}

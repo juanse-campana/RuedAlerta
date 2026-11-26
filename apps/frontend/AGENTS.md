@@ -1,0 +1,10 @@
+# Instrucciones del frontend
+
+Estas instrucciones complementan el `AGENTS.md` de la raíz y aplican a `apps/frontend/`. Consulta también `ARCHITECTURE.md` y `SECURITY.md` de la raíz.
+
+- Este componente utiliza Next.js con App Router y TypeScript. Mantén las decisiones de interfaz y despliegue que aún no se hayan acordado como pendientes.
+- Mantén la lógica de negocio y la autorización del lado del backend; no confíes en restricciones visuales como control de acceso.
+- No expongas credenciales, datos de ubicación o información de usuarios en código cliente, registros o archivos versionados.
+- Conserva la separación entre el frontend, el backend y el broker; no asumas que exista una API o integración MQTT ya implementada.
+- Para cambios de código, ejecuta las verificaciones aplicables y comunica cualquier limitación. Consulta `package.json` para los comandos disponibles.
+- Las notas sobre habilidades del frontend se mantienen en `docs/skills/`. Comprueba el inventario del entorno antes de usar una skill; un documento en esa carpeta no garantiza su instalación o descubrimiento automático.
