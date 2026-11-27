@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ruedalerta
+      POSTGRES_PASSWORD: ruedalerta_dev
+      POSTGRES_DB: ruedalerta
+    ports:
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - ruedalerta-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ruedalerta -d ruedalerta"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:11883:1883"
+    volumes:
+      - ./apps/broker/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ruedalerta-mosquitto-data:/mosquitto/data
+      - ruedalerta-mosquitto-log:/mosquitto/log
+
+volumes:
+  ruedalerta-postgres:
+  ruedalerta-mosquitto-data:
+  ruedalerta-mosquitto-log:

@@ -1,6 +1,6 @@
 # RuedAlerta
 
-RuedAlerta es un proyecto IoT sin fines de lucro para bicicletas y motocicletas. Busca detectar movimiento no autorizado, impactos y caídas, permitir solicitar la ubicación del vehículo y gestionar alertas. Se encuentra en fase de definición y sus capacidades aún no están implementadas ni verificadas.
+RuedAlerta es un proyecto IoT sin fines de lucro para bicicletas y motocicletas. El primer vertical slice implementa registro, autenticación, vehículos, nodos y eventos simulados persistidos en PostgreSQL y visibles desde el frontend. La detección física, MQTT, SMS, correo y ECU 911 todavía no están integrados ni verificados.
 
 ## Documentación
 
@@ -17,9 +17,9 @@ RuedAlerta es un proyecto IoT sin fines de lucro para bicicletas y motocicletas.
 - [Directorio compartido de habilidades](.agents/skills/)
 - [Política de seguridad](SECURITY.md)
 
-## Estructura inicial
+## Estructura
 
-`apps/` agrupa los componentes previstos: backend, frontend, broker y nodo. El frontend contiene un proyecto Next.js inicial; los demás componentes aún no están implementados. El método de despliegue está pendiente de elección.
+`apps/` agrupa backend, frontend, broker y nodo. `apps/backend/` contiene la API NestJS y Prisma; `apps/frontend/` contiene el panel del MVP; `apps/broker/` contiene la configuración local de Mosquitto; el firmware del nodo queda para la siguiente fase.
 
 El proyecto contempla instalaciones autogestionadas en infraestructura local o cloud; los servicios, el hardware y la conectividad pueden tener costos. La integración con ECU 911 es un objetivo sujeto a validación, no una funcionalidad disponible ni una garantía de respuesta de emergencia.
 
@@ -30,20 +30,33 @@ El proyecto contempla instalaciones autogestionadas en infraestructura local o c
 - Base de datos: **PostgreSQL**.
 - Broker MQTT: **Eclipse Mosquitto**.
 
-Next.js está inicializado en `apps/frontend/`; el backend, el broker y la base de datos aún no están implementados en el repositorio.
+El backend usa JWT, sesiones de renovación y autorización por propietario. PostgreSQL y Mosquitto se levantan con Docker Compose para desarrollo local.
 
-## Ejecutar el frontend inicial
+## Ejecutar el MVP local
 
-El único componente inicializado es la plantilla de Next.js. Para ejecutarla en desarrollo se necesitan Node.js y pnpm; se ha usado Node.js 22.23.1 y pnpm 10.32.1 en este proyecto. Desde la raíz del repositorio:
+Se necesitan Node.js, pnpm y Docker Desktop con el motor Linux activo. Desde la raíz:
+
+```bash
+docker compose up -d
+
+cd apps/backend
+pnpm install
+copy .env.example .env
+pnpm prisma:generate
+pnpm prisma:deploy
+pnpm start:dev
+```
+
+En otra terminal:
 
 ```bash
 cd apps/frontend
-pnpm install --frozen-lockfile
+pnpm install
 pnpm dev
 ```
 
-Abre la dirección local indicada en la terminal; verás la plantilla inicial de Next.js, no la interfaz funcional de RuedAlerta. Para detener el servidor, usa `Ctrl+C`. Los comandos `pnpm lint` y `pnpm build` están disponibles en ese directorio. El backend, el broker y la base de datos aún requieren implementación y configuración.
+Abre `http://localhost:3000`, crea una cuenta, registra una bicicleta o motocicleta, asocia un nodo simulado y registra un evento. La API queda disponible en `http://localhost:3001/api`. Para detener los procesos, usa `Ctrl+C`; para detener los contenedores, ejecuta `docker compose down`.
 
 ## Estado
 
-Se están refinando requisitos, casos de uso y escenarios de prueba. Las tecnologías restantes, el despliegue completo y la licencia aún están por definir. Los escenarios de prueba son propuestas y todavía no se han ejecutado.
+El vertical slice local está implementado y validado con compilación, lint y pruebas unitarias de autorización e idempotencia. La prueba integrada contra PostgreSQL queda pendiente de ejecutar cuando Docker Desktop esté disponible. Los sensores, MQTT, notificaciones y despliegue remoto siguen fuera de esta primera entrega.

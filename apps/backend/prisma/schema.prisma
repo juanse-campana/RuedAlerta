@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AccountStatus {
+  ACTIVE
+  PENDING_DELETION
+  DELETED
+}
+
+enum VehicleType {
+  BICYCLE
+  MOTORCYCLE
+}
+
+enum EventType {
+  UNAUTHORIZED_MOVEMENT
+  IMPACT
+  FALL
+}
+
+enum EventSource {
+  HTTP_SIMULATOR
+  MQTT
+}
+
+model User {
+  id              String          @id @default(uuid()) @db.Uuid
+  email           String          @unique
+  passwordHash    String
+  accountStatus   AccountStatus   @default(ACTIVE)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  sessions        RefreshSession[]
+  vehicles        Vehicle[]
+}
+
+model RefreshSession {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  tokenHash String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, revokedAt])
+}
+
+model Vehicle {
+  id        String       @id @default(uuid()) @db.Uuid
+  ownerId   String       @db.Uuid
+  type      VehicleType
+  alias     String
+  plate     String?
+  createdAt DateTime     @default(now())
+  owner     User         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  node      DeviceNode?
+  events    Event[]
+
+  @@index([ownerId, createdAt])
+}
+
+model DeviceNode {
+  id         String    @id @default(uuid()) @db.Uuid
+  vehicleId  String    @unique @db.Uuid
+  externalId String    @unique
+  status     String    @default("ACTIVE")
+  createdAt  DateTime  @default(now())
+  vehicle    Vehicle   @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  events     Event[]
+}
+
+model Event {
+  id              String         @id @default(uuid()) @db.Uuid
+  nodeId          String         @db.Uuid
+  vehicleId       String         @db.Uuid
+  externalEventId String
+  type            EventType
+  source          EventSource    @default(HTTP_SIMULATOR)
+  occurredAt      DateTime?
+  receivedAt      DateTime       @default(now())
+  latitude        Decimal?       @db.Decimal(9, 6)
+  longitude       Decimal?       @db.Decimal(9, 6)
+  node            DeviceNode     @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+  vehicle         Vehicle        @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@unique([nodeId, externalEventId])
+  @@index([vehicleId, receivedAt])
+}
